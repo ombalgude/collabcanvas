@@ -1,20 +1,33 @@
 "use client";
 
-import { ReactNode } from "react";
+import React from "react";
+
+type ButtonVariant = "primary" | "secondary";
 
 interface ButtonProps {
-  children: ReactNode;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  children: React.ReactNode;
+  variant?: ButtonVariant;
   className?: string;
-  appName: string;
 }
 
-export const Button = ({ children, className, appName }: ButtonProps) => {
+export function Button({
+  onClick,
+  children,
+  variant = "primary",
+  className = "", 
+}: ButtonProps) {
+  const variantClass =
+    variant === "primary"
+      ? "bg-blue-500 text-white hover:bg-blue-600"
+      : "bg-gray-300 text-black hover:bg-gray-400";
+
   return (
     <button
-      className={className}
-      onClick={() => alert(`Hello from your ${appName} app!`)}
+      onClick={onClick}
+      className={`px-4 py-2 rounded font-medium transition duration-200 ${variantClass} ${className}`}
     >
       {children}
     </button>
   );
-};
+}
