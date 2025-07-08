@@ -4,18 +4,15 @@ import React from "react";
 
 type ButtonVariant = "primary" | "secondary";
 
-interface ButtonProps {
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  children: React.ReactNode;
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
-  className?: string;
 }
 
 export function Button({
-  onClick,
   children,
   variant = "primary",
-  className = "", 
+  className = "",
+  ...rest
 }: ButtonProps) {
   const variantClass =
     variant === "primary"
@@ -24,8 +21,8 @@ export function Button({
 
   return (
     <button
-      onClick={onClick}
-      className={`px-4 py-2 rounded font-medium transition duration-200 ${variantClass} ${className}`}
+      className={`px-4 py-2 rounded font-medium transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${variantClass} ${className}`}
+      {...rest}
     >
       {children}
     </button>

@@ -1,7 +1,7 @@
 import { HTTP_BACKEND } from "@/config";
 import axios from "axios";
 
-// Fetch shapes from server with auth token
+// Fetch shapes from server with Authorization header
 export async function getExistingShapes(roomId: string) {
   const token = localStorage.getItem("token");
 
@@ -11,7 +11,12 @@ export async function getExistingShapes(roomId: string) {
   }
 
   try {
-    const res = await axios.get(`${HTTP_BACKEND}/chats/${roomId}?token=${token}`);
+    const res = await axios.get(`${HTTP_BACKEND}/chats/${roomId}`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+
     const messages = res.data.messages;
 
     const shapes = messages.map((x: { message: string }) => {

@@ -1,24 +1,25 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken"
-import {JWT_SECRET} from "@repo/backend-common/config"
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "@repo/backend-common/config";
 
-export function middleware(req : Request, res : Response, next : NextFunction) {
+export function middleware(req: Request, res: Response, next: NextFunction): void {
+  const token = req.headers["authorization"];
 
-const token = req.headers["authorization"] ?? ""
+  if (!token) {
+    res.status(403).json({ message: "Token missing. Unauthorized" });
+    return;
+  }
 
-const decoded = jwt.verify( token, JWT_SECRET)
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (typeof decoded === "string") {
+      res.status(403).json({ message: "Invalid token" });
+      return;
+    }
 
-if(typeof decoded == "string"){
-    return
-}
-
-if(decoded){
-    (req as any).userId = decoded.userId
-    next()
-
-}else{
-        res.status(403).json({
-        message : "you are unauthorized"
-    })
-}
+    (req as any).userId = decoded.userId;
+    next();
+  } catch (err) {
+    res.status(403).json({ message: "Invalid or expired token" });
+  }
 }

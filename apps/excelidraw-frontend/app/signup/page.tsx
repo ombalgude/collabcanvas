@@ -3,13 +3,23 @@
 import { useState } from "react";
 import { Input } from "@repo/ui/Input";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSignup = async () => {
+    if (!email || !password || !name) {
+      toast.error("Please fill out all fields.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const res = await axios.post("http://localhost:3000/signup", {
         email,
@@ -17,9 +27,13 @@ export default function Signup() {
         name,
       });
 
-      alert(res.data.message);
+      toast.success(res.data.message || "Signup successful!");
+      setTimeout(() => router.push("/signin"), 1000);
     } catch (err) {
-      alert("Signup failed.");
+      toast.error("Signup failed. Try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,7 +44,7 @@ export default function Signup() {
           Create an Account
         </h2>
         <p className="text-center text-gray-300">Start your journey with Excelidraw</p>
-        
+
         <Input
           type="text"
           placeholder="Full Name"
@@ -52,9 +66,12 @@ export default function Signup() {
 
         <button
           onClick={handleSignup}
-          className="mt-4 w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
+          disabled={loading}
+          className={`mt-4 w-full ${
+            loading ? "bg-purple-600/60 cursor-not-allowed" : "bg-purple-500 hover:bg-purple-600"
+          } text-white font-semibold py-2 px-4 rounded-md transition duration-300`}
         >
-          Sign Up
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
 
         <p className="text-sm text-center text-gray-400">

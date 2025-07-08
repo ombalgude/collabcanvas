@@ -31,15 +31,55 @@ export async function initDraw(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  const existingShapes: Shape[] = await getExistingShapes(roomId);
-  clearCanvas(existingShapes, canvas, ctx);
+  let shapes: Shape[] = await getExistingShapes(roomId);
+
+  // Load from localStorage (latest state)
+  const localData = localStorage.getItem(`canvas-${roomId}`);
+  if (localData) {
+    try {
+      const parsed = JSON.parse(localData);
+      if (Array.isArray(parsed)) shapes = parsed;
+    } catch (e) {
+      console.warn("Invalid canvas data in localStorage");
+    }
+  }
+
+  clearCanvas(shapes, canvas, ctx);
+
+  socket.send(
+    JSON.stringify({
+      type: "join_room",
+      roomId,
+    })
+  );
 
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
+
     if (message.type === "chat") {
       const parsed = JSON.parse(message.message);
-      existingShapes.push(parsed.shape);
-      clearCanvas(existingShapes, canvas, ctx);
+      shapes.push(parsed.shape);
+      localStorage.setItem(`canvas-${roomId}`, JSON.stringify(shapes));
+      clearCanvas(shapes, canvas, ctx);
+    }
+
+    if (message.type === "user-joined") {
+      // A new user joined and send them your current canvas
+      socket.send(
+        JSON.stringify({
+          type: "canvas-sync",
+          to: message.newUserSocketId,
+          shapes,
+        })
+      );
+    }
+
+    if (message.type === "canvas-update") {
+      if (Array.isArray(message.shapes)) {
+        shapes = message.shapes;
+        localStorage.setItem(`canvas-${roomId}`, JSON.stringify(shapes));
+        clearCanvas(shapes, canvas, ctx);
+      }
     }
   };
 
@@ -93,7 +133,8 @@ export async function initDraw(
     }
 
     if (!shape) return;
-    existingShapes.push(shape);
+    shapes.push(shape);
+    localStorage.setItem(`canvas-${roomId}`, JSON.stringify(shapes));
 
     socket.send(
       JSON.stringify({
@@ -113,7 +154,7 @@ export async function initDraw(
       startX = shape.endX;
       startY = shape.endY;
     } else {
-      clearCanvas(existingShapes, canvas, ctx);
+      clearCanvas(shapes, canvas, ctx);
     }
   });
 }
@@ -156,7 +197,7 @@ async function getExistingShapes(roomId: string): Promise<Shape[]> {
   try {
     const res = await axios.get(`${HTTP_BACKEND}/chats/${roomId}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     });
 

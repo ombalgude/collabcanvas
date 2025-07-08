@@ -4,24 +4,35 @@ import { useState } from "react";
 import { Input } from "@repo/ui/Input";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSignin = async () => {
+    if (!email || !password) {
+      toast.error("Please enter email and password");
+      return;
+    }
+
+    setLoading(true);
     try {
       const res = await axios.post("http://localhost:3000/signin", {
         email,
         password,
       });
 
-      alert(res.data.message);
       localStorage.setItem("token", res.data.token);
+      toast.success("Signed in successfully!");
       router.push("/dashboard");
     } catch (err) {
-      alert("Signin failed.");
+      toast.error("Signin failed. Please check credentials.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,9 +62,12 @@ export default function Signin() {
 
         <button
           onClick={handleSignin}
-          className="mt-4 w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
+          disabled={loading}
+          className={`mt-4 w-full ${
+            loading ? "bg-purple-600/60 cursor-not-allowed" : "bg-purple-500 hover:bg-purple-600"
+          } text-white font-semibold py-2 px-4 rounded-md transition duration-300`}
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </button>
 
         <p className="text-sm text-center text-gray-400">
