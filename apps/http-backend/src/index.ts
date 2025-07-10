@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "./config";  
+import { JWT_SECRET, PORT } from "./config";  
 import { middleware } from "./middleware";
 import {
   CreateUserSchema,
@@ -140,6 +140,6 @@ app.get("/chats/:roomId", async (req: Request, res: Response): Promise<void> => 
 });
 
 
-app.listen(3000, () => {
-  console.log(`Server is running on port 3000}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
