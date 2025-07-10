@@ -6,8 +6,9 @@ dotenv.config({
   path: path.resolve(__dirname, "../.env"),
 });
 
-if (!process.env.JWT_SECRET) {
-  throw new Error("JWT_SECRET must be defined");
+if (!process.env.JWT_SECRET && !process.env.PORT) {
+  throw new Error("JWT_SECRET and PORT must be defined");
 }
 
 export const JWT_SECRET = process.env.JWT_SECRET || "";
+export const PORT = process.env.PORT
