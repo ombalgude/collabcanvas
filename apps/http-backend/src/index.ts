@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "@repo/backend-common/config";
+import { JWT_SECRET } from "./config";  
 import { middleware } from "./middleware";
 import {
   CreateUserSchema,
@@ -9,6 +9,8 @@ import {
   CreateRoomSchema,
 } from "@repo/common/types";
 import { prismaClient } from "@repo/db/client";
+
+
 
 const app: Express = express();
 app.use(express.json());
@@ -139,5 +141,5 @@ app.get("/chats/:roomId", async (req: Request, res: Response): Promise<void> => 
 
 
 app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+  console.log(`Server is running on port 3000}`);
 });
