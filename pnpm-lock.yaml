@@ -73,58 +73,6 @@ importers:
         specifier: ^5
         version: 5.8.2
 
-  apps/excelidraw-frontend:
-    dependencies:
-      '@repo/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      axios:
-        specifier: ^1.10.0
-        version: 1.10.0
-      lucide-react:
-        specifier: ^0.525.0
-        version: 0.525.0(react@19.1.0)
-      next:
-        specifier: 15.3.4
-        version: 15.3.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react:
-        specifier: ^19.0.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.1.0(react@19.1.0)
-      react-hot-toast:
-        specifier: ^2.5.2
-        version: 2.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-    devDependencies:
-      '@eslint/eslintrc':
-        specifier: ^3
-        version: 3.3.1
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.1.11
-      '@types/node':
-        specifier: ^20
-        version: 20.19.2
-      '@types/react':
-        specifier: ^19
-        version: 19.1.0
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.1.1(@types/react@19.1.0)
-      eslint:
-        specifier: ^9
-        version: 9.29.0(jiti@2.4.2)
-      eslint-config-next:
-        specifier: 15.3.4
-        version: 15.3.4(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.2)
-      tailwindcss:
-        specifier: ^4
-        version: 4.1.11
-      typescript:
-        specifier: ^5
-        version: 5.8.2
-
   apps/http-backend:
     dependencies:
       '@repo/db':
@@ -161,6 +109,9 @@ importers:
       '@types/express':
         specifier: ^5.0.3
         version: 5.0.3
+      prisma:
+        specifier: ^6.10.1
+        version: 6.10.1(typescript@5.8.2)
 
   apps/web:
     dependencies:
@@ -245,6 +196,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      prisma:
+        specifier: ^6.10.1
+        version: 6.10.1(typescript@5.8.2)
 
   packages/common:
     dependencies:
@@ -255,19 +209,22 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      prisma:
+        specifier: ^6.10.1
+        version: 6.10.1(typescript@5.8.2)
 
   packages/db:
     dependencies:
       '@prisma/client':
         specifier: 6.10.1
         version: 6.10.1(prisma@6.10.1(typescript@5.8.2))(typescript@5.8.2)
-      prisma:
-        specifier: ^6.10.1
-        version: 6.10.1(typescript@5.8.2)
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      prisma:
+        specifier: ^6.10.1
+        version: 6.10.1(typescript@5.8.2)
 
   packages/eslint-config:
     devDependencies:
@@ -305,7 +262,11 @@ importers:
         specifier: ^8.34.0
         version: 8.34.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.2)
 
-  packages/typescript-config: {}
+  packages/typescript-config:
+    devDependencies:
+      prisma:
+        specifier: ^6.10.1
+        version: 6.10.1(typescript@5.8.2)
 
   packages/ui:
     dependencies:
