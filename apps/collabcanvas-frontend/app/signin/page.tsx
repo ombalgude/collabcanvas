@@ -5,6 +5,7 @@ import { Input } from "@repo/ui/Input";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { HTTP_BACKEND } from "@/config";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ export default function Signin() {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3000/signin", {
+      const res = await axios.post(`${HTTP_BACKEND}/signin`, {
         email,
         password,
       });

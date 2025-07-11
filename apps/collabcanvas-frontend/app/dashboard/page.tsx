@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { HTTP_BACKEND } from "@/config";
 
 interface Room {
   id: number;
@@ -26,7 +27,7 @@ export default function Dashboard() {
   const fetchMyRooms = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/rooms", {
+      const res = await axios.get(`${HTTP_BACKEND}/rooms`, {
         headers: { Authorization: token ?? "" },
       });
       setRooms(res.data.rooms || []);
@@ -48,16 +49,22 @@ export default function Dashboard() {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "http://localhost:3000/create-room",
+        `${HTTP_BACKEND}/create-room`,
         { name: trimmedName },
         { headers: { Authorization: token ?? "" } }
       );
 
       toast.success("Room created successfully!");
       router.push(`/canvas/${res.data.roomId}`);
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Room creation failed");
-      console.error(err);
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        // @ts-expect-error: err.response may exist
+        toast.error(err?.response?.data?.message || "Room creation failed");
+        console.error(err);
+      } else {
+        toast.error("Room creation failed");
+        console.error(err);
+      }
     } finally {
       setLoading(false);
     }
@@ -72,7 +79,7 @@ export default function Dashboard() {
 
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:3000/room/${trimmedSlug}`);
+      const res = await axios.get(`${HTTP_BACKEND}/room/${trimmedSlug}`);
       const roomId = res.data.room?.id;
 
       if (!roomId) {

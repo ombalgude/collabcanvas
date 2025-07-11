@@ -4,6 +4,7 @@ import { Input } from "@repo/ui/Input";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { HTTP_BACKEND } from "@/config";
 
 export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const handleSubmit = async () => {
     try {
       if (isSignin) {
-        const res = await axios.post("http://localhost:3000/signin", {
+        const res = await axios.post(`${HTTP_BACKEND}/signin`, {
           email,
           password,
         });
@@ -23,7 +24,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         alert("Signed in successfully!");
         router.push("/canvas");
       } else {
-        const res = await axios.post("http://localhost:3000/signup", {
+         await axios.post(`${HTTP_BACKEND}/signup`, {
           name,
           email,
           password,
