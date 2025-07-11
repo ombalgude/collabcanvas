@@ -2,31 +2,12 @@
   "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
-  "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "require": "./src/index.ts"
-    },
-    "./Button": {
-      "import": "./src/Button.tsx",
-      "require": "./src/Button.tsx"
-    },
-    "./Card": {
-      "import": "./src/Card.tsx",
-      "require": "./src/Card.tsx"
-    },
-    "./Code": {
-      "import": "./src/Code.tsx",
-      "require": "./src/Code.tsx"
-    },
-    "./Input": {
-      "import": "./src/Input.tsx",
-      "require": "./src/Input.tsx"
-    },
-    "./Spinner": {
-      "import": "./src/Spinner.tsx",
-      "require": "./src/Spinner.tsx"
-    }
+   "exports": {
+    "./Button": "./src/Button.tsx",
+    "./Card": "./src/Card.tsx",
+    "./Code": "./src/Code.tsx",
+    "./Input" : "./src/Input.tsx",
+    "./Spinner.tsx" : "./src/Spinner.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
