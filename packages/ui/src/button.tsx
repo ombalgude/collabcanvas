@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { JSX } from "react";
 
 type ButtonVariant = "primary" | "secondary";
 
@@ -13,7 +13,7 @@ export function Button({
   variant = "primary",
   className = "",
   ...rest
-}: ButtonProps) {
+}: ButtonProps) :JSX.Element {
   const variantClass =
     variant === "primary"
       ? "bg-blue-500 text-white hover:bg-blue-600"
