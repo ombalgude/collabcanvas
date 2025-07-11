@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@repo/ui/Input";
+import { Input } from "@repo/ui";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";

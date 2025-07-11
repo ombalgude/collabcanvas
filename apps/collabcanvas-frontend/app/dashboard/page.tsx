@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/ui/Button";
+import { Button } from "@repo/ui";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
