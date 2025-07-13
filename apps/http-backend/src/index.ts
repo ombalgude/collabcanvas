@@ -38,7 +38,8 @@ app.post("/signup", async (req: Request, res: Response): Promise<void> => {
     });
 
     res.json({ message: "You are signed up successfully", userId: user.id });
-  } catch {
+  } catch(error) {
+     console.error("Signup error:", error);
     res.status(403).json({ message: "User already exists with this email" });
   }
 });
