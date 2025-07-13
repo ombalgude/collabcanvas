@@ -14,7 +14,10 @@ import { prismaClient } from "@repo/db/client";
 
 const app: Express = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "https://collabcanvas-frontend.onrender.com", 
+  credentials: true,
+}));
 
 
 app.post("/signup", async (req: Request, res: Response): Promise<void> => {
