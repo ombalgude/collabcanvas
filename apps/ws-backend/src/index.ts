@@ -9,12 +9,11 @@ interface User {
   ws: WebSocket;
   rooms: string[];
   userId: string;
-  socketId: string; // unique identifier for each connection
+  socketId: string; 
 }
 
 const users: User[] = [];
 
-// Generate unique socketId
 function generateSocketId() {
   return Math.random().toString(36).substr(2, 9);
 }
@@ -65,14 +64,12 @@ wss.on("connection", function connection(ws, request) {
       return;
     }
 
-    const { type, roomId, message, to, shapes } = parsedData;
+    const { type, roomId, message } = parsedData;
 
     if (type === "join_room") {
       const user = users.find((u) => u.ws === ws);
       if (user && !user.rooms.includes(roomId)) {
         user.rooms.push(roomId);
-
-        // Notify others in the room a new user joined
         users.forEach((u) => {
           if (u.rooms.includes(roomId) && u.ws !== ws) {
             u.ws.send(
@@ -87,15 +84,33 @@ wss.on("connection", function connection(ws, request) {
       }
     }
 
-    if (type === "leave_room") {
-      const user = users.find((u) => u.ws === ws);
-      if (user) {
-        user.rooms = user.rooms.filter((r) => r !== roomId);
-      }
+    if (type === "request_canvas_history") {
+        try {
+            const messages = await prismaClient.chat.findMany({
+                where: { roomId: Number(roomId) },
+                orderBy: { id: "asc" }, 
+            });
+
+            const shapes = messages.map((x: { message: string }) => {
+                try {
+                    const messageData = JSON.parse(x.message);
+                    return messageData.shape;
+                } catch {
+                    return null;
+                }
+            }).filter(shape => shape !== null); 
+            ws.send(JSON.stringify({
+                type: "canvas_history",
+                shapes,
+            }));
+
+        } catch (err) {
+            console.error("Failed to fetch or send canvas history:", err);
+        }
     }
 
+
     if (type === "chat") {
-      // Save to DB
       try {
         await prismaClient.chat.create({
           data: {
@@ -108,7 +123,6 @@ wss.on("connection", function connection(ws, request) {
         console.error("Failed to store chat in DB:", err);
       }
 
-      // Broadcast to same room
       users.forEach((u) => {
         if (u.rooms.includes(roomId)) {
           u.ws.send(
@@ -122,19 +136,7 @@ wss.on("connection", function connection(ws, request) {
       });
     }
 
-    if (type === "canvas-sync") {
-      // Send canvas shapes to specific new user
-      const targetUser = users.find((u) => u.socketId === to);
-      if (targetUser) {
-        targetUser.ws.send(
-          JSON.stringify({
-            type: "canvas-update",
-            roomId,
-            shapes,
-          })
-        );
-      }
-    }
+
   });
 
   ws.on("close", () => {
