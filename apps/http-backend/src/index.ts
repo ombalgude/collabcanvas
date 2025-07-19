@@ -15,7 +15,7 @@ import { prismaClient } from "@repo/db/client";
 const app: Express = express();
 app.use(express.json());
 app.use(cors({
-  origin: "https://collabcanvas-frontend.onrender.com", 
+  origin:[ "https://collabcanvas-frontend.onrender.com" , "https://collabcanvas-frontend.vercel.app/"],
   credentials: true,
 }));
 
